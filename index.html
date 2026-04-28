@@ -843,27 +843,26 @@
   <script>
     (function () {
       const seed = [
-        { label: "IDIQ - Essential", price: 0.50 },
-        { label: "Recuro- Telemedicine", price: 0.50 },
-        { label: "Health Synergies Long Term Care", price: 0.50 },
-        { label: "Pram Embeded Acute Formualry", price: 0.50 },
-        { label: "RSSA Registered Social Security Analyst®", price: 0.50 },
-        { label: "MDHearing Aid", price: 0.50 },
-        { label: "CareGuide - Medical Bill Negotiator", price: 0.50 },
-        { label: "Safelite - AutoGlass", price: 0.25 },
-        { label: "Abenity - Local and National Discounts", price: 0.25 },
-        { label: "Wyndham Hotels", price: 0.25 },
-        { label: "Choice Hotels", price: 0.25 },
-        { label: "UPS Discounts", price: 0.25 },
-        { label: "Avis & Budget Discounts", price: 0.25 }
+        { label: "IDIQ - Essential", price: 1 },
+        { label: "Recuro- Telemedicine", price: 1 },
+        { label: "Health Synergies Long Term Care", price: 1 },
+        { label: "Pram Embeded Acute Formualry", price: 1 },
+        { label: "RSSA Registered Social Security Analyst®", price: 1 },
+        { label: "MDHearing Aid", price: 1 },
+        { label: "CareGuide - Medical Bill Negotiator", price: 1 },
+        { label: "Safelite - AutoGlass", price: 1 },
+        { label: "Abenity - Local and National Discounts", price: 1 },
+        { label: "Wyndham Hotels", price: 1 },
+        { label: "Choice Hotels", price: 1 },
+        { label: "UPS Discounts", price: 1 },
+        { label: "Avis & Budget Discounts", price: 1 }
       ];
       let items = [];
       let dragId = null;
 
       function newId() { return 'c_' + Math.random().toString(36).slice(2, 9); }
       function fmt(n) {
-        const rounded = Math.round(n);
-        return '$' + rounded.toLocaleString('en-US');
+        return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
       }
       function parsePrice(s) {
         if (typeof s === 'number') return s;
@@ -912,7 +911,7 @@
         price.spellcheck = false;
         price.textContent = fmt(i.price);
         price.onfocus = () => {
-          price.textContent = String(Math.round(i.price));
+          price.textContent = String(i.price);
           const r = document.createRange();
           r.selectNodeContents(price);
           const sel = window.getSelection();
