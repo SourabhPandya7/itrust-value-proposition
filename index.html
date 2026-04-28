@@ -1,545 +1,1076 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>iTrust Advisors — value proposition builder</title>
-<style>
-  :root {
-    --navy-900: #0a1929;
-    --navy-800: #0f2942;
-    --navy-700: #1a3a5c;
-    --navy-500: #2c5885;
-    --accent: #c9a961;
-    --accent-dark: #9a7f3f;
-    --bg-overlay: rgba(10, 25, 41, 0.82);
-    --bg-card: rgba(255, 255, 255, 0.97);
-    --bg-card-light: rgba(255, 255, 255, 0.88);
-    --text-primary: #0a1929;
-    --text-secondary: #4a5d73;
-    --text-tertiary: #8a97a8;
-    --text-on-dark: #ffffff;
-    --text-on-dark-muted: rgba(255, 255, 255, 0.75);
-    --border-subtle: rgba(10, 25, 41, 0.1);
-    --border-medium: rgba(10, 25, 41, 0.2);
-    --radius-md: 6px;
-    --radius-lg: 10px;
-  }
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: var(--text-primary);
-    min-height: 100vh;
-  }
-  body {
-    background-image: url("https://itrustllc.com/hs-fs/hubfs/Rectangle%2028670.webp");
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-color: var(--navy-900);
-  }
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(10, 25, 41, 0.92) 0%, rgba(10, 25, 41, 0.85) 100%);
-    z-index: 0;
-    pointer-events: none;
-  }
-  .page {
-    position: relative;
-    z-index: 1;
-    max-width: 1240px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-  }
-  .brand-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 1.5rem;
-    margin-bottom: 2rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .brand img { height: 44px; width: auto; display: block; }
-  .brand-fallback {
-    color: var(--text-on-dark);
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-  }
-  .brand-tag {
-    color: var(--text-on-dark-muted);
-    font-size: 12px;
-    font-style: italic;
-    padding-left: 14px;
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
-    max-width: 360px;
-  }
-  .vpb-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; gap: 16px; flex-wrap: wrap; }
-  .vpb-title { font-size: 28px; font-weight: 500; margin: 0; outline: none; border-radius: 4px; padding: 2px 6px; margin-left: -6px; color: var(--text-on-dark); }
-  .vpb-title:hover, .vpb-title:focus { background: rgba(255,255,255,0.08); }
-  .vpb-sub { font-size: 14px; color: var(--text-on-dark-muted); margin: 6px 0 0; padding: 2px 6px; margin-left: -6px; outline: none; border-radius: 4px; }
-  .vpb-sub:hover, .vpb-sub:focus { background: rgba(255,255,255,0.08); }
-  .vpb-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-  button {
-    height: 36px;
-    font-size: 13px;
-    padding: 0 14px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    color: var(--text-on-dark);
-    font-family: inherit;
-    transition: background 0.15s, border-color 0.15s, transform 0.1s;
-  }
-  button:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); }
-  button:active { transform: scale(0.98); }
-  button.btn-primary {
-    background: var(--accent);
-    color: var(--navy-900);
-    border-color: var(--accent);
-    font-weight: 500;
-  }
-  button.btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: var(--text-on-dark); }
-  input[type="text"], input[type="number"] {
-    height: 36px;
-    font-size: 13px;
-    padding: 0 10px;
-    background: rgba(255,255,255,0.9);
-    border: 1px solid var(--border-medium);
-    border-radius: var(--radius-md);
-    font-family: inherit;
-    color: var(--text-primary);
-    outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
-  input[type="text"]:focus, input[type="number"]:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.25);
-  }
-  .vpb-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
-  .vpb-stat { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-md); padding: 14px 16px; }
-  .vpb-stat-label { font-size: 11px; color: var(--text-on-dark-muted); margin: 0 0 4px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
-  .vpb-stat-val { font-size: 22px; font-weight: 500; margin: 0; color: var(--text-on-dark); }
-  .vpb-stat.accent .vpb-stat-val { color: var(--accent); }
-  .vpb-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 1.5rem; }
-  .vpb-col { border-radius: var(--radius-lg); padding: 16px; min-height: 340px; display: flex; flex-direction: column; transition: outline 0.15s; background: var(--bg-card); border: 1px solid var(--border-subtle); }
-  .vpb-col.drag-over { outline: 2px dashed var(--accent); outline-offset: -2px; }
-  .vpb-col-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; gap: 8px; }
-  .vpb-col-title { font-size: 14px; font-weight: 500; margin: 0; outline: none; border-radius: 4px; padding: 2px 4px; margin-left: -4px; text-transform: uppercase; letter-spacing: 0.06em; }
-  .vpb-col-title:hover, .vpb-col-title:focus { background: rgba(0,0,0,0.04); }
-  .vpb-col-count { font-size: 12px; font-weight: 500; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
-  .vpb-col-desc { font-size: 12px; margin: 0 0 10px; line-height: 1.55; outline: none; border-radius: 4px; padding: 2px 4px; margin-left: -4px; color: var(--text-secondary); }
-  .vpb-col-desc:hover, .vpb-col-desc:focus { background: rgba(0,0,0,0.04); }
-  .vpb-col-total { font-size: 13px; font-weight: 500; margin: 0 0 12px; padding: 10px 12px; background: var(--navy-900); color: var(--text-on-dark); border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; }
-  .vpb-col-total-label { color: var(--text-on-dark-muted); font-weight: 400; text-transform: uppercase; font-size: 11px; letter-spacing: 0.08em; }
-  .vpb-col-total-val { color: var(--accent); font-size: 15px; }
-  .vpb-items { display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 60px; }
-  .vpb-chip { background: #fff; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 10px 12px; font-size: 13px; display: flex; align-items: center; gap: 8px; transition: border-color 0.15s, transform 0.1s; }
-  .vpb-chip:hover { border-color: var(--navy-500); }
-  .vpb-chip.dragging { opacity: 0.4; }
-  .vpb-chip-handle { cursor: grab; color: var(--text-tertiary); font-size: 14px; line-height: 1; padding: 0 2px; user-select: none; }
-  .vpb-chip-handle:active { cursor: grabbing; }
-  .vpb-chip-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; outline: none; border-radius: 4px; padding: 2px 4px; cursor: text; }
-  .vpb-chip-label:hover, .vpb-chip-label:focus { background: #f4f6f9; }
-  .vpb-chip-price { font-size: 12px; font-weight: 500; color: var(--navy-700); outline: none; border-radius: 4px; padding: 2px 6px; cursor: text; white-space: nowrap; min-width: 56px; text-align: right; background: rgba(201, 169, 97, 0.12); }
-  .vpb-chip-price:hover, .vpb-chip-price:focus { background: rgba(201, 169, 97, 0.25); }
-  .vpb-chip-x { background: transparent; border: none; cursor: pointer; font-size: 18px; line-height: 1; padding: 2px 6px; color: var(--text-tertiary); border-radius: 4px; height: auto; }
-  .vpb-chip-x:hover { color: var(--text-primary); background: #f4f6f9; }
-  .vpb-empty { font-size: 12px; color: var(--text-tertiary); padding: 16px 8px; text-align: center; font-style: italic; border: 1px dashed var(--border-subtle); border-radius: var(--radius-md); }
-  .vpb-pool { background: var(--bg-card-light); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 1.5rem; }
-  .vpb-pool-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 10px; flex-wrap: wrap; }
-  .vpb-pool-title { font-size: 13px; font-weight: 500; margin: 0; color: var(--navy-700); text-transform: uppercase; letter-spacing: 0.06em; }
-  .vpb-add { display: flex; gap: 6px; flex-wrap: wrap; }
-  .vpb-add .name-input { flex: 1; min-width: 180px; }
-  .vpb-add .price-input { width: 90px; }
-  .vpb-add button { background: var(--navy-800); color: #fff; border-color: var(--navy-800); }
-  .vpb-add button:hover { background: var(--navy-700); border-color: var(--navy-700); }
-  .vpb-pitch { background: var(--bg-card); border-left: 3px solid var(--accent); border-radius: var(--radius-lg); padding: 20px 24px; }
-  .vpb-pitch-label { font-size: 11px; font-weight: 500; color: var(--navy-700); letter-spacing: 0.1em; margin: 0 0 12px; text-transform: uppercase; }
-  .vpb-pitch-body { font-size: 15px; line-height: 1.8; margin: 0; color: var(--text-primary); }
-  .vpb-pitch-body em { font-style: normal; font-weight: 500; color: var(--navy-800); }
-  .vpb-pitch-body strong { color: var(--accent-dark); font-weight: 500; }
-  .c-red-col { background: #fff5f5; }
-  .c-amber-col { background: #fffaf0; }
-  .c-teal-col { background: #f0f9f6; }
-  .c-red-col .vpb-col-total { background: #7a1a1a; }
-  .c-amber-col .vpb-col-total { background: #6b4a0a; }
-  .c-teal-col .vpb-col-total { background: #0f4d3a; }
-  .c-red-tag { background: #fecaca; color: #7a1a1a; }
-  .c-amber-tag { background: #fde6b5; color: #6b4a0a; }
-  .c-teal-tag { background: #b8e0d0; color: #0f4d3a; }
-  .modal-backdrop { position: fixed; inset: 0; background: rgba(10, 25, 41, 0.7); z-index: 10; display: none; align-items: center; justify-content: center; padding: 1rem; }
-  .modal-backdrop.open { display: flex; }
-  .modal { background: #fff; border-radius: var(--radius-lg); padding: 24px; max-width: 480px; width: 100%; }
-  .modal h3 { margin: 0 0 12px; font-size: 16px; font-weight: 500; color: var(--text-primary); }
-  .modal p { margin: 0 0 12px; font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
-  .modal input { width: 100%; margin-bottom: 12px; }
-  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
-  .modal-actions button { color: var(--text-primary); background: #f0f2f5; border-color: var(--border-medium); }
-  .modal-actions button:hover { background: #e4e7eb; }
-  .modal-actions button.btn-primary { color: var(--navy-900); background: var(--accent); border-color: var(--accent); }
-  .preset-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
-  .preset-btn { font-size: 11px; height: 28px; padding: 0 10px; background: rgba(255,255,255,0.06); }
-  @media (max-width: 800px) {
-    .vpb-grid { grid-template-columns: 1fr; }
-    .vpb-summary { grid-template-columns: repeat(2, 1fr); }
-    .brand-tag { display: none; }
-  }
-  @media print {
-    body::before { display: none; }
-    body { background: #fff; background-image: none; }
-    .brand-bar { border-bottom-color: #ccc; }
-    .brand-bar, .vpb-title, .vpb-sub { color: #000; }
-    .vpb-stat { background: #f5f5f5; color: #000; }
-    .vpb-stat-label, .vpb-stat-val { color: #000; }
-    .vpb-actions, .vpb-pool, .vpb-chip-x, .vpb-chip-handle { display: none !important; }
-    .vpb-col { break-inside: avoid; }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iTrust Advisors — value proposition builder</title>
+  <style>
+    :root {
+      --navy-900: #0a1929;
+      --navy-800: #0f2942;
+      --navy-700: #1a3a5c;
+      --navy-500: #2c5885;
+      --accent: #c9a961;
+      --accent-dark: #9a7f3f;
+      --bg-overlay: rgba(10, 25, 41, 0.82);
+      --bg-card: rgba(255, 255, 255, 0.97);
+      --bg-card-light: rgba(255, 255, 255, 0.88);
+      --text-primary: #0a1929;
+      --text-secondary: #4a5d73;
+      --text-tertiary: #8a97a8;
+      --text-on-dark: #ffffff;
+      --text-on-dark-muted: rgba(255, 255, 255, 0.75);
+      --border-subtle: rgba(10, 25, 41, 0.1);
+      --border-medium: rgba(10, 25, 41, 0.2);
+      --radius-md: 6px;
+      --radius-lg: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    body {
+      background-image: url("https://itrustllc.com/hs-fs/hubfs/Rectangle%2028670.webp");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-color: var(--navy-900);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10, 25, 41, 0.92) 0%, rgba(10, 25, 41, 0.85) 100%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .brand-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand img {
+      height: 44px;
+      width: auto;
+      display: block;
+    }
+
+    .brand-fallback {
+      color: var(--text-on-dark);
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-tag {
+      color: var(--text-on-dark-muted);
+      font-size: 12px;
+      font-style: italic;
+      padding-left: 14px;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+      max-width: 360px;
+    }
+
+    .vpb-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .vpb-title {
+      font-size: 28px;
+      font-weight: 500;
+      margin: 0;
+      outline: none;
+      border-radius: 4px;
+      padding: 2px 6px;
+      margin-left: -6px;
+      color: var(--text-on-dark);
+    }
+
+    .vpb-title:hover,
+    .vpb-title:focus {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .vpb-sub {
+      font-size: 14px;
+      color: var(--text-on-dark-muted);
+      margin: 6px 0 0;
+      padding: 2px 6px;
+      margin-left: -6px;
+      outline: none;
+      border-radius: 4px;
+    }
+
+    .vpb-sub:hover,
+    .vpb-sub:focus {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .vpb-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      height: 36px;
+      font-size: 13px;
+      padding: 0 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      color: var(--text-on-dark);
+      font-family: inherit;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button.btn-primary {
+      background: var(--accent);
+      color: var(--navy-900);
+      border-color: var(--accent);
+      font-weight: 500;
+    }
+
+    button.btn-primary:hover {
+      background: var(--accent-dark);
+      border-color: var(--accent-dark);
+      color: var(--text-on-dark);
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      height: 36px;
+      font-size: 13px;
+      padding: 0 10px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.25);
+    }
+
+    .vpb-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .vpb-stat {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+
+    .vpb-stat-label {
+      font-size: 11px;
+      color: var(--text-on-dark-muted);
+      margin: 0 0 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+    }
+
+    .vpb-stat-val {
+      font-size: 22px;
+      font-weight: 500;
+      margin: 0;
+      color: var(--text-on-dark);
+    }
+
+    .vpb-stat.accent .vpb-stat-val {
+      color: var(--accent);
+    }
+
+    .vpb-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 1.5rem;
+    }
+
+    .vpb-col {
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      transition: outline 0.15s;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .vpb-tier-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      display: block;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .vpb-col.drag-over {
+      outline: 2px dashed var(--accent);
+      outline-offset: -2px;
+    }
+
+    .vpb-col-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      gap: 8px;
+    }
+
+    .vpb-col-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0;
+      outline: none;
+      border-radius: 4px;
+      padding: 2px 4px;
+      margin-left: -4px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .vpb-col-title:hover,
+    .vpb-col-title:focus {
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .vpb-col-count {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 2px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .vpb-col-desc {
+      font-size: 12px;
+      margin: 0 0 10px;
+      line-height: 1.55;
+      outline: none;
+      border-radius: 4px;
+      padding: 2px 4px;
+      margin-left: -4px;
+      color: var(--text-secondary);
+    }
+
+    .vpb-col-desc:hover,
+    .vpb-col-desc:focus {
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .vpb-col-total {
+      font-size: 13px;
+      font-weight: 500;
+      margin: 0 0 12px;
+      padding: 10px 12px;
+      background: var(--navy-900);
+      color: var(--text-on-dark);
+      border-radius: var(--radius-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .vpb-col-total-label {
+      color: var(--text-on-dark-muted);
+      font-weight: 400;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+
+    .vpb-col-total-val {
+      color: var(--accent);
+      font-size: 15px;
+    }
+
+    .vpb-items {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      min-height: 60px;
+    }
+
+    .vpb-chip {
+      background: #fff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.15s, transform 0.1s;
+    }
+
+    .vpb-chip:hover {
+      border-color: var(--navy-500);
+    }
+
+    .vpb-chip.dragging {
+      opacity: 0.4;
+    }
+
+    .vpb-chip-handle {
+      cursor: grab;
+      color: var(--text-tertiary);
+      font-size: 14px;
+      line-height: 1;
+      padding: 0 2px;
+      user-select: none;
+    }
+
+    .vpb-chip-handle:active {
+      cursor: grabbing;
+    }
+
+    .vpb-chip-label {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      outline: none;
+      border-radius: 4px;
+      padding: 2px 4px;
+      cursor: text;
+    }
+
+    .vpb-chip-label:hover,
+    .vpb-chip-label:focus {
+      background: #f4f6f9;
+    }
+
+    .vpb-chip-price {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--navy-700);
+      outline: none;
+      border-radius: 4px;
+      padding: 2px 6px;
+      cursor: text;
+      white-space: nowrap;
+      min-width: 56px;
+      text-align: right;
+      background: rgba(201, 169, 97, 0.12);
+    }
+
+    .vpb-chip-price:hover,
+    .vpb-chip-price:focus {
+      background: rgba(201, 169, 97, 0.25);
+    }
+
+    .vpb-chip-x {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      padding: 2px 6px;
+      color: var(--text-tertiary);
+      border-radius: 4px;
+      height: auto;
+    }
+
+    .vpb-chip-x:hover {
+      color: var(--text-primary);
+      background: #f4f6f9;
+    }
+
+    .vpb-empty {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      padding: 16px 8px;
+      text-align: center;
+      font-style: italic;
+      border: 1px dashed var(--border-subtle);
+      border-radius: var(--radius-md);
+    }
+
+    .vpb-pool {
+      background: var(--bg-card-light);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      margin-bottom: 1.5rem;
+    }
+
+    .vpb-pool-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .vpb-pool-title {
+      font-size: 13px;
+      font-weight: 500;
+      margin: 0;
+      color: var(--navy-700);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .vpb-add {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .vpb-add .name-input {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .vpb-add .price-input {
+      width: 90px;
+    }
+
+    .vpb-add button {
+      background: var(--navy-800);
+      color: #fff;
+      border-color: var(--navy-800);
+    }
+
+    .vpb-add button:hover {
+      background: var(--navy-700);
+      border-color: var(--navy-700);
+    }
+
+    .vpb-pitch {
+      background: var(--bg-card);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+    }
+
+    .vpb-pitch-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--navy-700);
+      letter-spacing: 0.1em;
+      margin: 0 0 12px;
+      text-transform: uppercase;
+    }
+
+    .vpb-pitch-body {
+      font-size: 15px;
+      line-height: 1.8;
+      margin: 0;
+      color: var(--text-primary);
+    }
+
+    .vpb-pitch-body em {
+      font-style: normal;
+      font-weight: 500;
+      color: var(--navy-800);
+    }
+
+    .vpb-pitch-body strong {
+      color: var(--accent-dark);
+      font-weight: 500;
+    }
+
+    .c-red-col {
+      background: #fff5f5;
+    }
+
+    .c-amber-col {
+      background: #fffaf0;
+    }
+
+    .c-teal-col {
+      background: #f0f9f6;
+    }
+
+    .c-red-col .vpb-col-total {
+      background: #7a1a1a;
+    }
+
+    .c-amber-col .vpb-col-total {
+      background: #6b4a0a;
+    }
+
+    .c-teal-col .vpb-col-total {
+      background: #0f4d3a;
+    }
+
+    .c-red-tag {
+      background: #fecaca;
+      color: #7a1a1a;
+    }
+
+    .c-amber-tag {
+      background: #fde6b5;
+      color: #6b4a0a;
+    }
+
+    .c-teal-tag {
+      background: #b8e0d0;
+      color: #0f4d3a;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 25, 41, 0.7);
+      z-index: 10;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .modal h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .modal p {
+      margin: 0 0 12px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .modal input {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .modal-actions button {
+      color: var(--text-primary);
+      background: #f0f2f5;
+      border-color: var(--border-medium);
+    }
+
+    .modal-actions button:hover {
+      background: #e4e7eb;
+    }
+
+    .modal-actions button.btn-primary {
+      color: var(--navy-900);
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .preset-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .preset-btn {
+      font-size: 11px;
+      height: 28px;
+      padding: 0 10px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    @media (max-width: 800px) {
+      .vpb-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .vpb-summary {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .brand-tag {
+        display: none;
+      }
+    }
+
+    @media print {
+      body::before {
+        display: none;
+      }
+
+      body {
+        background: #fff;
+        background-image: none;
+      }
+
+      .brand-bar {
+        border-bottom-color: #ccc;
+      }
+
+      .brand-bar,
+      .vpb-title,
+      .vpb-sub {
+        color: #000;
+      }
+
+      .vpb-stat {
+        background: #f5f5f5;
+        color: #000;
+      }
+
+      .vpb-stat-label,
+      .vpb-stat-val {
+        color: #000;
+      }
+
+      .vpb-actions,
+      .vpb-pool,
+      .vpb-chip-x,
+      .vpb-chip-handle {
+        display: none !important;
+      }
+
+      .vpb-col {
+        break-inside: avoid;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="page">
+  <div class="page">
 
-  <div class="brand-bar">
-    <div class="brand">
-      <img src="https://itrustllc.com/hubfs/iTrust/images/white-logo-img.png" alt="iTrust Advisors" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
-      <span class="brand-fallback" style="display: none;">iTrust Advisors</span>
-      <span class="brand-tag">Personal Interaction. Productive Conversation. Professional Advancement.</span>
-    </div>
-    <div class="vpb-actions">
-      <button onclick="vpbChangeBackground()">Change background</button>
-      <button onclick="vpbReset()">Reset</button>
-      <button onclick="vpbExport(event)">Copy summary</button>
-      <button class="btn-primary" onclick="window.print()">Print / PDF</button>
-    </div>
-  </div>
-
-  <div class="vpb-header">
-    <div style="flex: 1; min-width: 280px;">
-      <h1 class="vpb-title" contenteditable="true" spellcheck="false">iTrust advisor services — value proposition</h1>
-      <p class="vpb-sub" contenteditable="true" spellcheck="false">Click any text to edit. Drag the ⋮⋮ handle to move services between tiers.</p>
-    </div>
-  </div>
-
-  <div class="vpb-summary">
-    <div class="vpb-stat"><p class="vpb-stat-label">Must-have total</p><p class="vpb-stat-val" id="stat-must">$0</p></div>
-    <div class="vpb-stat"><p class="vpb-stat-label">Want-to-have total</p><p class="vpb-stat-val" id="stat-want">$0</p></div>
-    <div class="vpb-stat"><p class="vpb-stat-label">Nice-to-have total</p><p class="vpb-stat-val" id="stat-nice">$0</p></div>
-    <div class="vpb-stat accent"><p class="vpb-stat-label">Advisor bundle value</p><p class="vpb-stat-val" id="stat-all">$0</p></div>
-  </div>
-
-  <div class="vpb-grid">
-    <div class="vpb-col c-red-col" data-tier="must" ondragover="vpbOver(event)" ondragleave="vpbLeave(event)" ondrop="vpbDrop(event, 'must')">
-      <div class="vpb-col-head">
-        <p class="vpb-col-title" contenteditable="true" spellcheck="false">Must-have</p>
-        <span class="vpb-col-count c-red-tag" id="count-must">0</span>
+    <div class="brand-bar">
+      <div class="brand">
+        <img src="https://itrustllc.com/hubfs/iTrust/images/white-logo-img.png" alt="iTrust Advisors"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+        <span class="brand-fallback" style="display: none;">iTrust Advisors</span>
+        <span class="brand-tag">Personal Interaction. Productive Conversation. Professional Advancement.</span>
       </div>
-      <p class="vpb-col-desc" contenteditable="true" spellcheck="false">Foundational. Advisors cannot run their practice without these.</p>
-      <div class="vpb-col-total"><span class="vpb-col-total-label">Tier value</span><span class="vpb-col-total-val" id="total-must">$0</span></div>
-      <div class="vpb-items" id="tier-must"></div>
-    </div>
-    <div class="vpb-col c-amber-col" data-tier="want" ondragover="vpbOver(event)" ondragleave="vpbLeave(event)" ondrop="vpbDrop(event, 'want')">
-      <div class="vpb-col-head">
-        <p class="vpb-col-title" contenteditable="true" spellcheck="false">Want-to-have</p>
-        <span class="vpb-col-count c-amber-tag" id="count-want">0</span>
-      </div>
-      <p class="vpb-col-desc" contenteditable="true" spellcheck="false">Differentiators. Why advisors choose iTrust over competitors.</p>
-      <div class="vpb-col-total"><span class="vpb-col-total-label">Tier value</span><span class="vpb-col-total-val" id="total-want">$0</span></div>
-      <div class="vpb-items" id="tier-want"></div>
-    </div>
-    <div class="vpb-col c-teal-col" data-tier="nice" ondragover="vpbOver(event)" ondragleave="vpbLeave(event)" ondrop="vpbDrop(event, 'nice')">
-      <div class="vpb-col-head">
-        <p class="vpb-col-title" contenteditable="true" spellcheck="false">Nice-to-have</p>
-        <span class="vpb-col-count c-teal-tag" id="count-nice">0</span>
-      </div>
-      <p class="vpb-col-desc" contenteditable="true" spellcheck="false">Delighters. The personal touches that build lasting partnerships.</p>
-      <div class="vpb-col-total"><span class="vpb-col-total-label">Tier value</span><span class="vpb-col-total-val" id="total-nice">$0</span></div>
-      <div class="vpb-items" id="tier-nice"></div>
-    </div>
-  </div>
-
-  <div class="vpb-pool" ondragover="vpbOver(event)" ondragleave="vpbLeave(event)" ondrop="vpbDrop(event, 'pool')">
-    <div class="vpb-pool-head">
-      <p class="vpb-pool-title">Service pool — drag into a tier</p>
-      <div class="vpb-add">
-        <input type="text" class="name-input" id="vpb-new-name" placeholder="Service name..." maxlength="60" />
-        <input type="text" class="price-input" id="vpb-new-price" placeholder="$0" />
-        <button onclick="vpbAdd()">Add service</button>
+      <div class="vpb-actions">
+        <button onclick="vpbChangeBackground()">Change background</button>
+        <button onclick="vpbReset()">Reset</button>
+        <button onclick="vpbExport(event)">Copy summary</button>
+        <button class="btn-primary" onclick="window.print()">Print / PDF</button>
       </div>
     </div>
-    <div class="vpb-items" id="tier-pool"></div>
-  </div>
 
-  <div class="vpb-pitch">
-    <p class="vpb-pitch-label">Pitch narrative</p>
-    <p class="vpb-pitch-body" id="vpb-pitch">Start placing services into tiers to see the pitch narrative.</p>
-  </div>
-</div>
-
-<div class="modal-backdrop" id="bg-modal" onclick="if(event.target===this)vpbCloseBackground()">
-  <div class="modal">
-    <h3>Change background image</h3>
-    <p>Paste a direct image URL, or pick a preset from iTrust's site.</p>
-    <div class="preset-row">
-      <button onclick="vpbSetBg('https://itrustllc.com/hs-fs/hubfs/Rectangle%2028670.webp')" style="color: #000; background: #e5e5e5;">Hero 1</button>
-      <button onclick="vpbSetBg('https://itrustllc.com/hs-fs/hubfs/iTrust/images/Rectangle%2028671.webp')" style="color: #000; background: #e5e5e5;">Hero 2</button>
-      <button onclick="vpbSetBg('https://itrustllc.com/hs-fs/hubfs/iTrust/images/Rectangle%2028672.webp')" style="color: #000; background: #e5e5e5;">Hero 3</button>
-      <button onclick="vpbSetBg('https://itrustllc.com/hs-fs/hubfs/iTrust/images/Rectangle%2028669.webp')" style="color: #000; background: #e5e5e5;">Hero 4</button>
-      <button onclick="vpbSetBg('')" style="color: #000; background: #e5e5e5;">No image</button>
+    <div class="vpb-header">
+      <div style="flex: 1; min-width: 280px;">
+        <h1 class="vpb-title" contenteditable="true" spellcheck="false">iTrust advisor services — value proposition</h1>
+        <p class="vpb-sub" contenteditable="true" spellcheck="false">Click any text to edit. Drag the ⋮⋮ handle to move
+          services between tiers.</p>
+      </div>
     </div>
-    <input type="text" id="bg-url" placeholder="Or paste a custom URL..." />
-    <div class="modal-actions">
-      <button onclick="vpbCloseBackground()">Cancel</button>
-      <button class="btn-primary" onclick="vpbApplyBackground()">Apply</button>
+
+    <div class="vpb-summary">
+      <div class="vpb-stat">
+        <p class="vpb-stat-label">Must-have total</p>
+        <p class="vpb-stat-val" id="stat-must">$0</p>
+      </div>
+      <div class="vpb-stat">
+        <p class="vpb-stat-label">Want-to-have total</p>
+        <p class="vpb-stat-val" id="stat-want">$0</p>
+      </div>
+      <div class="vpb-stat">
+        <p class="vpb-stat-label">Nice-to-have total</p>
+        <p class="vpb-stat-val" id="stat-nice">$0</p>
+      </div>
+      <div class="vpb-stat accent">
+        <p class="vpb-stat-label">Advisor bundle value</p>
+        <p class="vpb-stat-val" id="stat-all">$0</p>
+      </div>
+    </div>
+
+    <div class="vpb-grid">
+      <div class="vpb-col c-red-col" data-tier="must" ondragover="vpbOver(event)" ondragleave="vpbLeave(event)"
+        ondrop="vpbDrop(event, 'must')">
+        <img src="images/must-have.png" alt="Must-have" class="vpb-tier-img" />
+        <div class="vpb-col-head">
+          <p class="vpb-col-title" contenteditable="true" spellcheck="false">Must-have</p>
+          <span class="vpb-col-count c-red-tag" id="count-must">0</span>
+        </div>
+        <p class="vpb-col-desc" contenteditable="true" spellcheck="false">Foundational. Advisors cannot run their
+          practice without these.</p>
+        <div class="vpb-col-total"><span class="vpb-col-total-label">Tier value</span><span class="vpb-col-total-val"
+            id="total-must">$0</span></div>
+        <div class="vpb-items" id="tier-must"></div>
+      </div>
+      <div class="vpb-col c-amber-col" data-tier="want" ondragover="vpbOver(event)" ondragleave="vpbLeave(event)"
+        ondrop="vpbDrop(event, 'want')">
+        <img src="images/want-to-have.png" alt="Want-to-have" class="vpb-tier-img" />
+        <div class="vpb-col-head">
+          <p class="vpb-col-title" contenteditable="true" spellcheck="false">Want-to-have</p>
+          <span class="vpb-col-count c-amber-tag" id="count-want">0</span>
+        </div>
+        <p class="vpb-col-desc" contenteditable="true" spellcheck="false">Differentiators. Why advisors choose iTrust
+          over competitors.</p>
+        <div class="vpb-col-total"><span class="vpb-col-total-label">Tier value</span><span class="vpb-col-total-val"
+            id="total-want">$0</span></div>
+        <div class="vpb-items" id="tier-want"></div>
+      </div>
+      <div class="vpb-col c-teal-col" data-tier="nice" ondragover="vpbOver(event)" ondragleave="vpbLeave(event)"
+        ondrop="vpbDrop(event, 'nice')">
+        <img src="images/nice-to-have.png" alt="Nice-to-have" class="vpb-tier-img" />
+        <div class="vpb-col-head">
+          <p class="vpb-col-title" contenteditable="true" spellcheck="false">Nice-to-have</p>
+          <span class="vpb-col-count c-teal-tag" id="count-nice">0</span>
+        </div>
+        <p class="vpb-col-desc" contenteditable="true" spellcheck="false">Delighters. The personal touches that build
+          lasting partnerships.</p>
+        <div class="vpb-col-total"><span class="vpb-col-total-label">Tier value</span><span class="vpb-col-total-val"
+            id="total-nice">$0</span></div>
+        <div class="vpb-items" id="tier-nice"></div>
+      </div>
+    </div>
+
+    <div class="vpb-pool" ondragover="vpbOver(event)" ondragleave="vpbLeave(event)" ondrop="vpbDrop(event, 'pool')">
+      <div class="vpb-pool-head">
+        <p class="vpb-pool-title">Service pool — drag into a tier</p>
+        <div class="vpb-add">
+          <input type="text" class="name-input" id="vpb-new-name" placeholder="Service name..." maxlength="60" />
+          <input type="text" class="price-input" id="vpb-new-price" placeholder="$0" />
+          <button onclick="vpbAdd()">Add service</button>
+        </div>
+      </div>
+      <div class="vpb-items" id="tier-pool"></div>
+    </div>
+
+    <div class="vpb-pitch">
+      <p class="vpb-pitch-label">Pitch narrative</p>
+      <p class="vpb-pitch-body" id="vpb-pitch">Start placing services into tiers to see the pitch narrative.</p>
     </div>
   </div>
-</div>
 
-<script>
-(function(){
-  const seed = [
-    { label: "Carrier contracting & appointments", price: 149 },
-    { label: "Licensed back office support", price: 129 },
-    { label: "Commission tracking & reporting", price: 99 },
-    { label: "Compliance & regulatory support", price: 119 },
-    { label: "Case design consultation", price: 179 },
-    { label: "New business application support", price: 89 },
-    { label: "Policy service & in-force changes", price: 79 },
-    { label: "Product & carrier marketing intel", price: 69 },
-    { label: "Advanced sales & illustration tools", price: 109 },
-    { label: "Succession planning consultation", price: 139 },
-    { label: "Multi-carrier product access", price: 99 },
-    { label: "Concierge client onboarding", price: 59 },
-    { label: "Marketing content & newsletters", price: 39 },
-    { label: "Industry news & research feeds", price: 29 },
-    { label: "Branded client collateral", price: 19 }
-  ];
-  let items = [];
-  let dragId = null;
+  <div class="modal-backdrop" id="bg-modal" onclick="if(event.target===this)vpbCloseBackground()">
+    <div class="modal">
+      <h3>Change background image</h3>
+      <p>Paste a direct image URL, or pick a preset from iTrust's site.</p>
+      <div class="preset-row">
+        <button onclick="vpbSetBg('https://itrustllc.com/hs-fs/hubfs/Rectangle%2028670.webp')"
+          style="color: #000; background: #e5e5e5;">Hero 1</button>
+        <button onclick="vpbSetBg('https://itrustllc.com/hs-fs/hubfs/iTrust/images/Rectangle%2028671.webp')"
+          style="color: #000; background: #e5e5e5;">Hero 2</button>
+        <button onclick="vpbSetBg('https://itrustllc.com/hs-fs/hubfs/iTrust/images/Rectangle%2028672.webp')"
+          style="color: #000; background: #e5e5e5;">Hero 3</button>
+        <button onclick="vpbSetBg('https://itrustllc.com/hs-fs/hubfs/iTrust/images/Rectangle%2028669.webp')"
+          style="color: #000; background: #e5e5e5;">Hero 4</button>
+        <button onclick="vpbSetBg('')" style="color: #000; background: #e5e5e5;">No image</button>
+      </div>
+      <input type="text" id="bg-url" placeholder="Or paste a custom URL..." />
+      <div class="modal-actions">
+        <button onclick="vpbCloseBackground()">Cancel</button>
+        <button class="btn-primary" onclick="vpbApplyBackground()">Apply</button>
+      </div>
+    </div>
+  </div>
 
-  function newId() { return 'c_' + Math.random().toString(36).slice(2, 9); }
-  function fmt(n) {
-    const rounded = Math.round(n);
-    return '$' + rounded.toLocaleString('en-US');
-  }
-  function parsePrice(s) {
-    if (typeof s === 'number') return s;
-    const n = parseFloat(String(s).replace(/[^0-9.\-]/g, ''));
-    return isNaN(n) ? 0 : n;
-  }
+  <script>
+    (function () {
+      const seed = [
+        { label: "IDIQ - Essential", price: 0.50 },
+        { label: "Recuro- Telemedicine", price: 0.50 },
+        { label: "Health Synergies Long Term Care", price: 0.50 },
+        { label: "Pram Embeded Acute Formualry", price: 0.50 },
+        { label: "RSSA Registered Social Security Analyst®", price: 0.50 },
+        { label: "MDHearing Aid", price: 0.50 },
+        { label: "CareGuide - Medical Bill Negotiator", price: 0.50 },
+        { label: "Safelite - AutoGlass", price: 0.25 },
+        { label: "Abenity - Local and National Discounts", price: 0.25 },
+        { label: "Wyndham Hotels", price: 0.25 },
+        { label: "Choice Hotels", price: 0.25 },
+        { label: "UPS Discounts", price: 0.25 },
+        { label: "Avis & Budget Discounts", price: 0.25 }
+      ];
+      let items = [];
+      let dragId = null;
 
-  function init() {
-    items = seed.map(s => ({ id: newId(), label: s.label, price: s.price, tier: 'pool' }));
-  }
-  init();
-
-  function buildChip(i) {
-    const c = document.createElement('div');
-    c.className = 'vpb-chip';
-    c.dataset.id = i.id;
-
-    const handle = document.createElement('span');
-    handle.className = 'vpb-chip-handle';
-    handle.textContent = '⋮⋮';
-    handle.draggable = true;
-    handle.ondragstart = (e) => {
-      dragId = i.id;
-      c.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', i.id);
-    };
-    handle.ondragend = () => { c.classList.remove('dragging'); dragId = null; };
-
-    const lbl = document.createElement('span');
-    lbl.className = 'vpb-chip-label';
-    lbl.contentEditable = 'true';
-    lbl.spellcheck = false;
-    lbl.textContent = i.label;
-    lbl.onblur = () => {
-      const v = lbl.textContent.trim();
-      i.label = v || 'Untitled';
-      if (!v) lbl.textContent = i.label;
-      renderPitch();
-    };
-    lbl.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); lbl.blur(); } };
-
-    const price = document.createElement('span');
-    price.className = 'vpb-chip-price';
-    price.contentEditable = 'true';
-    price.spellcheck = false;
-    price.textContent = fmt(i.price);
-    price.onfocus = () => {
-      price.textContent = String(Math.round(i.price));
-      const r = document.createRange();
-      r.selectNodeContents(price);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(r);
-    };
-    price.onblur = () => {
-      i.price = parsePrice(price.textContent);
-      price.textContent = fmt(i.price);
-      updateTotals();
-    };
-    price.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); price.blur(); } };
-
-    const x = document.createElement('button');
-    x.className = 'vpb-chip-x';
-    x.innerHTML = '&times;';
-    x.title = i.tier === 'pool' ? 'Remove service' : 'Return to pool';
-    x.onclick = (e) => {
-      e.stopPropagation();
-      if (i.tier === 'pool') {
-        items = items.filter(x => x.id !== i.id);
-      } else {
-        i.tier = 'pool';
+      function newId() { return 'c_' + Math.random().toString(36).slice(2, 9); }
+      function fmt(n) {
+        const rounded = Math.round(n);
+        return '$' + rounded.toLocaleString('en-US');
       }
+      function parsePrice(s) {
+        if (typeof s === 'number') return s;
+        const n = parseFloat(String(s).replace(/[^0-9.\-]/g, ''));
+        return isNaN(n) ? 0 : n;
+      }
+
+      function init() {
+        items = seed.map(s => ({ id: newId(), label: s.label, price: s.price, tier: 'pool' }));
+      }
+      init();
+
+      function buildChip(i) {
+        const c = document.createElement('div');
+        c.className = 'vpb-chip';
+        c.dataset.id = i.id;
+
+        const handle = document.createElement('span');
+        handle.className = 'vpb-chip-handle';
+        handle.textContent = '⋮⋮';
+        handle.draggable = true;
+        handle.ondragstart = (e) => {
+          dragId = i.id;
+          c.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', i.id);
+        };
+        handle.ondragend = () => { c.classList.remove('dragging'); dragId = null; };
+
+        const lbl = document.createElement('span');
+        lbl.className = 'vpb-chip-label';
+        lbl.contentEditable = 'true';
+        lbl.spellcheck = false;
+        lbl.textContent = i.label;
+        lbl.onblur = () => {
+          const v = lbl.textContent.trim();
+          i.label = v || 'Untitled';
+          if (!v) lbl.textContent = i.label;
+          renderPitch();
+        };
+        lbl.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); lbl.blur(); } };
+
+        const price = document.createElement('span');
+        price.className = 'vpb-chip-price';
+        price.contentEditable = 'true';
+        price.spellcheck = false;
+        price.textContent = fmt(i.price);
+        price.onfocus = () => {
+          price.textContent = String(Math.round(i.price));
+          const r = document.createRange();
+          r.selectNodeContents(price);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(r);
+        };
+        price.onblur = () => {
+          i.price = parsePrice(price.textContent);
+          price.textContent = fmt(i.price);
+          updateTotals();
+        };
+        price.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); price.blur(); } };
+
+        const x = document.createElement('button');
+        x.className = 'vpb-chip-x';
+        x.innerHTML = '&times;';
+        x.title = i.tier === 'pool' ? 'Remove service' : 'Return to pool';
+        x.onclick = (e) => {
+          e.stopPropagation();
+          if (i.tier === 'pool') {
+            items = items.filter(x => x.id !== i.id);
+          } else {
+            i.tier = 'pool';
+          }
+          render();
+        };
+
+        c.appendChild(handle);
+        c.appendChild(lbl);
+        c.appendChild(price);
+        c.appendChild(x);
+        return c;
+      }
+
+      function render() {
+        ['pool', 'must', 'want', 'nice'].forEach(t => {
+          const el = document.getElementById('tier-' + t);
+          el.innerHTML = '';
+          const group = items.filter(i => i.tier === t);
+          if (group.length === 0) {
+            const e = document.createElement('div');
+            e.className = 'vpb-empty';
+            e.textContent = t === 'pool' ? 'Pool empty — all services assigned' : 'Drop services here';
+            el.appendChild(e);
+          }
+          group.forEach(i => el.appendChild(buildChip(i)));
+        });
+        updateTotals();
+      }
+
+      function updateTotals() {
+        const sum = (t) => items.filter(i => i.tier === t).reduce((a, b) => a + b.price, 0);
+        const mustT = sum('must'), wantT = sum('want'), niceT = sum('nice');
+        document.getElementById('count-must').textContent = items.filter(i => i.tier === 'must').length;
+        document.getElementById('count-want').textContent = items.filter(i => i.tier === 'want').length;
+        document.getElementById('count-nice').textContent = items.filter(i => i.tier === 'nice').length;
+        document.getElementById('total-must').textContent = fmt(mustT);
+        document.getElementById('total-want').textContent = fmt(wantT);
+        document.getElementById('total-nice').textContent = fmt(niceT);
+        document.getElementById('stat-must').textContent = fmt(mustT);
+        document.getElementById('stat-want').textContent = fmt(wantT);
+        document.getElementById('stat-nice').textContent = fmt(niceT);
+        document.getElementById('stat-all').textContent = fmt(mustT + wantT + niceT);
+        renderPitch();
+      }
+
+      function renderPitch() {
+        const must = items.filter(i => i.tier === 'must');
+        const want = items.filter(i => i.tier === 'want');
+        const nice = items.filter(i => i.tier === 'nice');
+        const el = document.getElementById('vpb-pitch');
+        if (must.length === 0 && want.length === 0 && nice.length === 0) {
+          el.textContent = 'Start placing services into tiers to see the pitch narrative.';
+          return;
+        }
+        const join = (a) => {
+          const names = a.map(i => i.label.toLowerCase());
+          return names.length <= 1 ? names.join('') : names.slice(0, -1).join(', ') + ' and ' + names.slice(-1);
+        };
+        const sum = (a) => a.reduce((x, y) => x + y.price, 0);
+        let parts = [];
+        if (must.length) parts.push('Every iTrust advisor relationship is built on <em>' + join(must) + '</em> — the operational backbone worth <strong>' + fmt(sum(must)) + '</strong> that no serious practice can do without.');
+        if (want.length) parts.push('We differentiate through <em>' + join(want) + '</em>, adding <strong>' + fmt(sum(want)) + '</strong> of meaningful value that turns a transactional carrier relationship into a strategic partnership.');
+        if (nice.length) parts.push('And we deepen loyalty through <em>' + join(nice) + '</em> — <strong>' + fmt(sum(nice)) + '</strong> of personal touches that reflect iTrust\'s promise: personal interaction, productive conversation, professional advancement.');
+        el.innerHTML = parts.join(' ');
+      }
+
+      window.vpbOver = (e) => { e.preventDefault(); e.currentTarget.classList.add('drag-over'); e.dataTransfer.dropEffect = 'move'; };
+      window.vpbLeave = (e) => { e.currentTarget.classList.remove('drag-over'); };
+      window.vpbDrop = (e, tier) => {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+        const id = dragId || e.dataTransfer.getData('text/plain');
+        if (!id) return;
+        const it = items.find(i => i.id === id);
+        if (it) { it.tier = tier; render(); }
+        dragId = null;
+      };
+      window.vpbAdd = () => {
+        const nameEl = document.getElementById('vpb-new-name');
+        const priceEl = document.getElementById('vpb-new-price');
+        const v = nameEl.value.trim();
+        if (!v) return;
+        const p = parsePrice(priceEl.value || '0');
+        items.push({ id: newId(), label: v, price: p, tier: 'pool' });
+        nameEl.value = '';
+        priceEl.value = '';
+        render();
+      };
+      window.vpbReset = () => { init(); render(); };
+      window.vpbExport = (ev) => {
+        const section = (t) => {
+          const list = items.filter(i => i.tier === t);
+          if (list.length === 0) return '—';
+          const total = list.reduce((a, b) => a + b.price, 0);
+          return list.map(i => '  • ' + i.label + ' — ' + fmt(i.price)).join('\n') + '\n  Subtotal: ' + fmt(total);
+        };
+        const all = items.filter(i => i.tier !== 'pool').reduce((a, b) => a + b.price, 0);
+        const title = document.querySelector('.vpb-title').textContent.trim();
+        const txt =
+          'iTrust Advisors\n' + title + '\n' + '='.repeat(Math.max(title.length, 20)) +
+          '\n\nMUST-HAVE:\n' + section('must') +
+          '\n\nWANT-TO-HAVE:\n' + section('want') +
+          '\n\nNICE-TO-HAVE:\n' + section('nice') +
+          '\n\nADVISOR BUNDLE VALUE: ' + fmt(all);
+        if (navigator.clipboard) navigator.clipboard.writeText(txt);
+        const btn = ev && ev.target;
+        if (btn) {
+          const orig = btn.textContent;
+          btn.textContent = 'Copied ✓';
+          setTimeout(() => { btn.textContent = orig; }, 1500);
+        }
+      };
+      window.vpbChangeBackground = () => {
+        document.getElementById('bg-url').value = '';
+        document.getElementById('bg-modal').classList.add('open');
+      };
+      window.vpbCloseBackground = () => {
+        document.getElementById('bg-modal').classList.remove('open');
+      };
+      window.vpbSetBg = (url) => {
+        document.getElementById('bg-url').value = url;
+      };
+      window.vpbApplyBackground = () => {
+        const url = document.getElementById('bg-url').value.trim();
+        if (url) {
+          document.body.style.backgroundImage = 'url("' + url.replace(/"/g, '\\"') + '")';
+        } else {
+          document.body.style.backgroundImage = 'none';
+        }
+        vpbCloseBackground();
+      };
+      document.getElementById('vpb-new-name').addEventListener('keydown', (e) => { if (e.key === 'Enter') vpbAdd(); });
+      document.getElementById('vpb-new-price').addEventListener('keydown', (e) => { if (e.key === 'Enter') vpbAdd(); });
+      document.getElementById('bg-url').addEventListener('keydown', (e) => { if (e.key === 'Enter') vpbApplyBackground(); });
       render();
-    };
-
-    c.appendChild(handle);
-    c.appendChild(lbl);
-    c.appendChild(price);
-    c.appendChild(x);
-    return c;
-  }
-
-  function render() {
-    ['pool','must','want','nice'].forEach(t => {
-      const el = document.getElementById('tier-' + t);
-      el.innerHTML = '';
-      const group = items.filter(i => i.tier === t);
-      if (group.length === 0) {
-        const e = document.createElement('div');
-        e.className = 'vpb-empty';
-        e.textContent = t === 'pool' ? 'Pool empty — all services assigned' : 'Drop services here';
-        el.appendChild(e);
-      }
-      group.forEach(i => el.appendChild(buildChip(i)));
-    });
-    updateTotals();
-  }
-
-  function updateTotals() {
-    const sum = (t) => items.filter(i => i.tier === t).reduce((a, b) => a + b.price, 0);
-    const mustT = sum('must'), wantT = sum('want'), niceT = sum('nice');
-    document.getElementById('count-must').textContent = items.filter(i=>i.tier==='must').length;
-    document.getElementById('count-want').textContent = items.filter(i=>i.tier==='want').length;
-    document.getElementById('count-nice').textContent = items.filter(i=>i.tier==='nice').length;
-    document.getElementById('total-must').textContent = fmt(mustT);
-    document.getElementById('total-want').textContent = fmt(wantT);
-    document.getElementById('total-nice').textContent = fmt(niceT);
-    document.getElementById('stat-must').textContent = fmt(mustT);
-    document.getElementById('stat-want').textContent = fmt(wantT);
-    document.getElementById('stat-nice').textContent = fmt(niceT);
-    document.getElementById('stat-all').textContent = fmt(mustT + wantT + niceT);
-    renderPitch();
-  }
-
-  function renderPitch() {
-    const must = items.filter(i=>i.tier==='must');
-    const want = items.filter(i=>i.tier==='want');
-    const nice = items.filter(i=>i.tier==='nice');
-    const el = document.getElementById('vpb-pitch');
-    if (must.length === 0 && want.length === 0 && nice.length === 0) {
-      el.textContent = 'Start placing services into tiers to see the pitch narrative.';
-      return;
-    }
-    const join = (a) => {
-      const names = a.map(i => i.label.toLowerCase());
-      return names.length <= 1 ? names.join('') : names.slice(0,-1).join(', ') + ' and ' + names.slice(-1);
-    };
-    const sum = (a) => a.reduce((x,y) => x + y.price, 0);
-    let parts = [];
-    if (must.length) parts.push('Every iTrust advisor relationship is built on <em>' + join(must) + '</em> — the operational backbone worth <strong>' + fmt(sum(must)) + '</strong> that no serious practice can do without.');
-    if (want.length) parts.push('We differentiate through <em>' + join(want) + '</em>, adding <strong>' + fmt(sum(want)) + '</strong> of meaningful value that turns a transactional carrier relationship into a strategic partnership.');
-    if (nice.length) parts.push('And we deepen loyalty through <em>' + join(nice) + '</em> — <strong>' + fmt(sum(nice)) + '</strong> of personal touches that reflect iTrust\'s promise: personal interaction, productive conversation, professional advancement.');
-    el.innerHTML = parts.join(' ');
-  }
-
-  window.vpbOver = (e) => { e.preventDefault(); e.currentTarget.classList.add('drag-over'); e.dataTransfer.dropEffect = 'move'; };
-  window.vpbLeave = (e) => { e.currentTarget.classList.remove('drag-over'); };
-  window.vpbDrop = (e, tier) => {
-    e.preventDefault();
-    e.currentTarget.classList.remove('drag-over');
-    const id = dragId || e.dataTransfer.getData('text/plain');
-    if (!id) return;
-    const it = items.find(i => i.id === id);
-    if (it) { it.tier = tier; render(); }
-    dragId = null;
-  };
-  window.vpbAdd = () => {
-    const nameEl = document.getElementById('vpb-new-name');
-    const priceEl = document.getElementById('vpb-new-price');
-    const v = nameEl.value.trim();
-    if (!v) return;
-    const p = parsePrice(priceEl.value || '0');
-    items.push({ id: newId(), label: v, price: p, tier: 'pool' });
-    nameEl.value = '';
-    priceEl.value = '';
-    render();
-  };
-  window.vpbReset = () => { init(); render(); };
-  window.vpbExport = (ev) => {
-    const section = (t) => {
-      const list = items.filter(i => i.tier === t);
-      if (list.length === 0) return '—';
-      const total = list.reduce((a,b) => a + b.price, 0);
-      return list.map(i => '  • ' + i.label + ' — ' + fmt(i.price)).join('\n') + '\n  Subtotal: ' + fmt(total);
-    };
-    const all = items.filter(i => i.tier !== 'pool').reduce((a,b) => a + b.price, 0);
-    const title = document.querySelector('.vpb-title').textContent.trim();
-    const txt =
-      'iTrust Advisors\n' + title + '\n' + '='.repeat(Math.max(title.length, 20)) +
-      '\n\nMUST-HAVE:\n' + section('must') +
-      '\n\nWANT-TO-HAVE:\n' + section('want') +
-      '\n\nNICE-TO-HAVE:\n' + section('nice') +
-      '\n\nADVISOR BUNDLE VALUE: ' + fmt(all);
-    if (navigator.clipboard) navigator.clipboard.writeText(txt);
-    const btn = ev && ev.target;
-    if (btn) {
-      const orig = btn.textContent;
-      btn.textContent = 'Copied ✓';
-      setTimeout(() => { btn.textContent = orig; }, 1500);
-    }
-  };
-  window.vpbChangeBackground = () => {
-    document.getElementById('bg-url').value = '';
-    document.getElementById('bg-modal').classList.add('open');
-  };
-  window.vpbCloseBackground = () => {
-    document.getElementById('bg-modal').classList.remove('open');
-  };
-  window.vpbSetBg = (url) => {
-    document.getElementById('bg-url').value = url;
-  };
-  window.vpbApplyBackground = () => {
-    const url = document.getElementById('bg-url').value.trim();
-    if (url) {
-      document.body.style.backgroundImage = 'url("' + url.replace(/"/g, '\\"') + '")';
-    } else {
-      document.body.style.backgroundImage = 'none';
-    }
-    vpbCloseBackground();
-  };
-  document.getElementById('vpb-new-name').addEventListener('keydown', (e) => { if (e.key === 'Enter') vpbAdd(); });
-  document.getElementById('vpb-new-price').addEventListener('keydown', (e) => { if (e.key === 'Enter') vpbAdd(); });
-  document.getElementById('bg-url').addEventListener('keydown', (e) => { if (e.key === 'Enter') vpbApplyBackground(); });
-  render();
-})();
-</script>
+    })();
+  </script>
 </body>
+
 </html>
