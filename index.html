@@ -363,30 +363,73 @@
       padding: 10px 12px;
       font-size: 13px;
       display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: border-color 0.15s, transform 0.1s;
+      cursor: grab;
+    }
+
+    .vpb-chip:active {
+      cursor: grabbing;
+    }
+
+    .vpb-chip-header {
+      display: flex;
       align-items: center;
       gap: 8px;
-      transition: border-color 0.15s, transform 0.1s;
+      width: 100%;
+    }
+
+    .vpb-chip-desc {
+      display: none;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border-subtle);
+      line-height: 1.4;
+      text-align: left;
+    }
+
+    .vpb-chip-desc.open {
+      display: block;
+    }
+
+    .vpb-chip-toggle {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+
+    .vpb-chip-toggle:hover {
+      background: #f4f6f9;
+      color: var(--text-primary);
+    }
+
+    .vpb-chip-toggle svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.2s;
+    }
+
+    .vpb-chip-toggle.open svg {
+      transform: rotate(180deg);
     }
 
     .vpb-chip:hover {
       border-color: var(--navy-500);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transform: translateY(-2px);
     }
 
     .vpb-chip.dragging {
       opacity: 0.4;
-    }
-
-    .vpb-chip-handle {
-      cursor: grab;
-      color: var(--text-tertiary);
-      font-size: 14px;
-      line-height: 1;
-      padding: 0 2px;
-      user-select: none;
-    }
-
-    .vpb-chip-handle:active {
-      cursor: grabbing;
     }
 
     .vpb-chip-label {
@@ -397,7 +440,8 @@
       outline: none;
       border-radius: 4px;
       padding: 2px 4px;
-      cursor: text;
+      cursor: grab;
+      user-select: none;
     }
 
     .vpb-chip-label:hover,
@@ -843,19 +887,19 @@
   <script>
     (function () {
       const seed = [
-        { label: "IDIQ - Essential", price: 1 },
-        { label: "Recuro- Telemedicine", price: 1 },
-        { label: "Health Synergies Long Term Care", price: 1 },
-        { label: "Pram Embeded Acute Formualry", price: 1 },
-        { label: "RSSA Registered Social Security Analyst®", price: 1 },
-        { label: "MDHearing Aid", price: 1 },
-        { label: "CareGuide - Medical Bill Negotiator", price: 1 },
-        { label: "Safelite - AutoGlass", price: 1 },
-        { label: "Abenity - Local and National Discounts", price: 1 },
-        { label: "Wyndham Hotels", price: 1 },
-        { label: "Choice Hotels", price: 1 },
-        { label: "UPS Discounts", price: 1 },
-        { label: "Avis & Budget Discounts", price: 1 }
+        { label: "IDIQ - Essential", price: 1, desc: "Protect your identity and build credit with up to $1 million in identity theft insurance, daily credit monitoring, and dark web monitoring." },
+        { label: "Recuro - Telemedicine", price: 1, desc: "Enjoy 24/7 access to board-certified doctors for common medical concerns with an average wait time of just 10 minutes, plus electronic prescription ordering." },
+        { label: "Health Synergies Long Term Care", price: 1, desc: "Save 5% to 30% on long-term care services, including home health and hospice care, through a network of over 7,400 providers." },
+        { label: "Pram Embedded Acute Formulary", price: 1, desc: "Access a select list of commonly prescribed urgent care medications at a $0 copay with no annual deductible, accepted at most major chain and independent pharmacies." },
+        { label: "RSSA Registered Social Security Analyst®", price: 1, desc: "Maximize your Social Security benefits with a personalized planning software tool and live support from credentialed experts." },
+        { label: "MDHearing Aid", price: 1, desc: "Get affordable, high-quality FDA-registered hearing aids shipped directly to you, and receive $75 off select accessories with a qualifying purchase." },
+        { label: "CareGuide - Medical Bill Negotiator", price: 1, desc: "Utilize expert Care Advocates to help negotiate and reduce large hospital bills while locating affordable, low-cost healthcare options near you." },
+        { label: "Safelite - AutoGlass", price: 1, desc: "Save $10 on rock chip repair or $20 on windshield replacement orders with expert technicians." },
+        { label: "Abenity - Local and National Discounts", price: 1, desc: "Access over 102,000 exclusive discounts across 10,000 cities, offering an average of over $4,500 in annual savings on everyday purchases, dining, and tickets." },
+        { label: "Wyndham Hotels", price: 1, desc: "Save 25% off the Best Available Rate at nearly 7,000 participating hotels and all-inclusive resorts worldwide." },
+        { label: "Choice Hotels", price: 1, desc: "Save up to 20% off the best available rate at over 7,000 participating business and leisure hotel locations." },
+        { label: "UPS Discounts", price: 1, desc: "Enjoy flat-rate discounts including up to 50% off Domestic Next Day services and 30% off Ground Commercial and Residential shipping." },
+        { label: "Avis & Budget Discounts", price: 1, desc: "Save up to 25% off base rates on car rentals, accumulate rewards points, and enjoy expedited counter service." }
       ];
       let items = [];
       let dragId = null;
@@ -871,7 +915,7 @@
       }
 
       function init() {
-        items = seed.map(s => ({ id: newId(), label: s.label, price: s.price, tier: 'pool' }));
+        items = seed.map(s => ({ id: newId(), label: s.label, price: s.price, desc: s.desc, tier: 'pool' }));
       }
       init();
 
@@ -880,30 +924,29 @@
         c.className = 'vpb-chip';
         c.dataset.id = i.id;
 
-        const handle = document.createElement('span');
-        handle.className = 'vpb-chip-handle';
-        handle.textContent = '⋮⋮';
-        handle.draggable = true;
-        handle.ondragstart = (e) => {
+        if (i.desc) {
+          c.title = i.desc;
+        }
+
+        c.draggable = true;
+        c.ondragstart = (e) => {
+          if (e.target.closest && e.target.closest('.vpb-chip-price, .vpb-chip-x, .vpb-chip-toggle')) {
+            e.preventDefault();
+            return;
+          }
           dragId = i.id;
           c.classList.add('dragging');
           e.dataTransfer.effectAllowed = 'move';
           e.dataTransfer.setData('text/plain', i.id);
         };
-        handle.ondragend = () => { c.classList.remove('dragging'); dragId = null; };
+        c.ondragend = () => { c.classList.remove('dragging'); dragId = null; };
+
+        const header = document.createElement('div');
+        header.className = 'vpb-chip-header';
 
         const lbl = document.createElement('span');
         lbl.className = 'vpb-chip-label';
-        lbl.contentEditable = 'true';
-        lbl.spellcheck = false;
         lbl.textContent = i.label;
-        lbl.onblur = () => {
-          const v = lbl.textContent.trim();
-          i.label = v || 'Untitled';
-          if (!v) lbl.textContent = i.label;
-          renderPitch();
-        };
-        lbl.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); lbl.blur(); } };
 
         const price = document.createElement('span');
         price.className = 'vpb-chip-price';
@@ -925,6 +968,33 @@
         };
         price.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); price.blur(); } };
 
+        const toggle = document.createElement('button');
+        toggle.className = 'vpb-chip-toggle';
+        toggle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+        toggle.title = 'Toggle description';
+        
+        const desc = document.createElement('div');
+        desc.className = 'vpb-chip-desc';
+        desc.textContent = i.desc || '';
+
+        const toggleDesc = (e) => {
+          if (e && e.stopPropagation) e.stopPropagation();
+          const isOpen = desc.classList.contains('open');
+          if (isOpen) {
+            desc.classList.remove('open');
+            toggle.classList.remove('open');
+          } else {
+            desc.classList.add('open');
+            toggle.classList.add('open');
+          }
+        };
+
+        toggle.onclick = toggleDesc;
+        c.onclick = (e) => {
+          if (e.target.closest && e.target.closest('.vpb-chip-price, .vpb-chip-x')) return;
+          toggleDesc(e);
+        };
+
         const x = document.createElement('button');
         x.className = 'vpb-chip-x';
         x.innerHTML = '&times;';
@@ -939,10 +1009,17 @@
           render();
         };
 
-        c.appendChild(handle);
-        c.appendChild(lbl);
-        c.appendChild(price);
-        c.appendChild(x);
+        header.appendChild(lbl);
+        header.appendChild(price);
+        if (i.desc) {
+          header.appendChild(toggle);
+        }
+        header.appendChild(x);
+
+        c.appendChild(header);
+        if (i.desc) {
+          c.appendChild(desc);
+        }
         return c;
       }
 
@@ -1016,7 +1093,7 @@
         const v = nameEl.value.trim();
         if (!v) return;
         const p = parsePrice(priceEl.value || '0');
-        items.push({ id: newId(), label: v, price: p, tier: 'pool' });
+        items.push({ id: newId(), label: v, price: p, desc: '', tier: 'pool' });
         nameEl.value = '';
         priceEl.value = '';
         render();
